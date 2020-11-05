@@ -20,11 +20,11 @@ public class Main extends Application{
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
     Button btn;
     Scene menu,game;
-    private int width = 450, height = 900;
+    private int width = 1280, height = 720;
     @Override
     public void start(Stage primaryStage) throws Exception{
         window = primaryStage;
-        window.setTitle("Tetris");
+        window.setTitle("Space Invaders");
         layout1 = new StackPane();
         layout2 = new StackPane();
         btn = new Button();
