@@ -1,11 +1,13 @@
 package sample;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -23,6 +25,10 @@ public class Main extends Application{
     private int width = 1280, height = 720;
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Image player = new Image("player.png");
+        Image playerDestroyed = new Image("player destroyed.png");
+        Image enemy1 = new Image("enemy.png");
+
         window = primaryStage;
         window.setTitle("Space Invaders");
         layout1 = new StackPane();
@@ -36,6 +42,15 @@ public class Main extends Application{
         game = new Scene(layout2, width, height);
         window.setScene(menu);
         window.show();
+        new AnimationTimer() {
+
+            @Override
+            public void handle(long now) {
+                
+            }
+        }.start();
+
+
     }
 
     public static void main(String[] args) {
