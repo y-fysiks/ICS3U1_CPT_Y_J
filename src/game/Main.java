@@ -2,16 +2,12 @@ package game;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -32,12 +28,11 @@ public class Main extends Application{
         primaryStage.setTitle("Space Invaders");
 
         Image player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
-        Image playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString());
-        Image enemy1 = new Image(new File("enemy.png").toURI().toString());
+        Image playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
+        Image enemy1 = new Image(new File("enemy.png").toURI().toString(), 88, 64, true, false);
 
         Group root = new Group();
         game = new Scene(root);
-        primaryStage.setScene(game);
 
         Canvas canvas = new Canvas(1280, 720);
         root.getChildren().add(canvas);
@@ -61,11 +56,12 @@ public class Main extends Application{
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                gc.setFill( Color.RED );
-                gc.setStroke( Color.BLACK );
+                gc.setFill( Color.BLACK );
+                gc.fillRect(0, 0, 1281, 721);
                 gc.setLineWidth(2);
-
-
+                Font font = Font.font( "Times New Roman", FontWeight.BOLD, 48 );
+                gc.setFont(font);
+                gc.drawImage(player, 100, 660);
             }
         }.start();
 

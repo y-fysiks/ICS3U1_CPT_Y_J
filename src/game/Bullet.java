@@ -23,6 +23,6 @@ public class Bullet {
         if(pos<0||pos>720)
             return true;
         //TODO handle case of bullet hitting enemy/obstacle
-
+        return false;
     }
 }

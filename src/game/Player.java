@@ -4,9 +4,6 @@ public class Player {
     private int lives = 3;
     private int pos = 0;
 
-    public Player() {
-
-    }
 
     public void shoot() {
 
