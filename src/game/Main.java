@@ -14,15 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-//hi
-//asdasdp
-//I think I know what's wrong
-//nvm
-//hi lol
-//ah
-//u could just
-//change the address
-//wait imma search it up
 public class Main extends Application{
     Stage window;
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
