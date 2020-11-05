@@ -1,11 +1,10 @@
-package sample;
+package game;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -14,9 +13,16 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
+//hi
+//asdasdp
+//I think I know what's wrong
+//nvm
+//hi lol
+//ah
+//u could just
+//change the address
+//wait imma search it up
 public class Main extends Application{
     Stage window;
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
@@ -25,10 +31,9 @@ public class Main extends Application{
     private int width = 1280, height = 720;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Image player = new Image("player.png");
-        Image playerDestroyed = new Image("player destroyed.png");
-        Image enemy1 = new Image("enemy.png");
-
+        Image player = new Image("file:player.png");
+        Image playerDestroyed = new Image("file:player destroyed.png");
+        Image enemy1 = new Image("file:enemy.png");
         window = primaryStage;
         window.setTitle("Space Invaders");
         layout1 = new StackPane();
@@ -43,10 +48,9 @@ public class Main extends Application{
         window.setScene(menu);
         window.show();
         new AnimationTimer() {
-
             @Override
             public void handle(long now) {
-                
+
             }
         }.start();
 
