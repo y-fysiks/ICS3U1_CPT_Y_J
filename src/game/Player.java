@@ -1,17 +1,27 @@
 package game;
 
-public class Player{
+public class Player {
     private int lives = 3;
-    private int position = 0;
+    private int pos = 0;
 
-    public Player(){
-
-    }
-    public static void shoot(){
-
-    }
-    public static void move(char direction){
+    public Player() {
 
     }
 
+    public void shoot() {
+
+    }
+
+    public void move(char direction) {
+        if (direction == 'L') {
+            if (this.pos > 0) {
+                this.pos -= 10;
+            }
+        }
+        if (direction == 'R') {
+            if (this.pos < 1280) {
+                this.pos += 10;
+            }
+        }
+    }
 }
