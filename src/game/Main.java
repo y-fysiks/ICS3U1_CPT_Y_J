@@ -109,6 +109,9 @@ public class Main extends Application{
                         for(int j = 0; j < 5; j++) {
                             grid[i][j].update();
                             if(me.isHit(grid[i][j].bullet)) me.destroy();
+                            if (cntFrames % 60 == 0) {
+                                grid[i][j].isFiring = false;
+                            }
                         }
                     }
                     if (cntFrames % 60 == 0) {
@@ -131,11 +134,11 @@ public class Main extends Application{
                         }
 
                     }
-                    if(now%10000==0)
+                    if(cntFrames % 60 == 0)
                         for(int i = 0; i < 11; i++)
                             for(int j = 0; j < 5; j++)
                                 grid[i][j].isFiring=false;
-                    if(now%10000==0) {
+                    if(cntFrames % 60 == 0) {
                         shoot();
                     }
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
