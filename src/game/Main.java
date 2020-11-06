@@ -31,7 +31,8 @@ public class Main extends Application{
     public static Image playerDestroyed;
     public static Image enemy1;
     static boolean temp = false;
-
+    static Alien[][]grid;
+    static char prevDirection='R';
     public void start(Stage primaryStage) throws Exception{
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
@@ -70,6 +71,12 @@ public class Main extends Application{
 
 
         Player me = new Player();
+        grid = new Alien[11][5];
+        for(int i = 0; i < 11; i++) {
+            for (int j = 0; j < 5; j++) {
+                grid[i][j] = new Alien(1, i*80+210,j*80); //Change 1 to random later
+            }
+        }
         HashSet<String> input = new HashSet<>();
         game.setOnKeyPressed(
                 event -> {
@@ -83,12 +90,7 @@ public class Main extends Application{
                     input.remove(code);
                 }
         );
-        Alien[][] enemies = new Alien[5][11];
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 11; j++) {
-                enemies[i][j] = new Alien(1, 100 + j * 64, 100 + i * 47);
-            }
-        }
+
         //setup ends
         new AnimationTimer() {
             @Override
@@ -101,12 +103,26 @@ public class Main extends Application{
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
-                    for (int i = 0; i < 5; i++) {
-                        for (int j = 0; j < 11; j++) {
-                            enemies[i][j].update();
-                        }
+                    for(int i = 0; i < 11; i++)
+                            for(int j = 0; j < 5; j++)
+                                    grid[i][j].update();
+                    char direction='R';
+                    if(grid[10][0].x >= 1200) {
+                        direction = 'D';
+                        moveAll(direction,5);
+                        direction = 'L';
+                        prevDirection='L';
                     }
-
+                    else if(grid[0][0].x <= 20) {
+                        direction = 'D';
+                        moveAll(direction,5);
+                        direction='R';
+                        prevDirection='R';
+                    }
+                    else{
+                        direction=prevDirection;
+                    }
+                    moveAll(direction,5);
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
