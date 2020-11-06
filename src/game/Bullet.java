@@ -1,28 +1,43 @@
 package game;
 
+import javafx.scene.paint.Color;
+
 public class Bullet {
     private int pos; //the y position of the bullet
     boolean done = false;
-    public Bullet(int pos){
-        this.pos = pos;
+    int x = -100;
+    int y = -100;
+    boolean enabled = false;
+    char dir = 'U';
+
+    public void update() {
+        final int delta = 4;
+        if (enabled) {
+            Main.gc.setFill(Color.WHITE);
+            Main.gc.rect(x - 1, y, 2, 6);
+            //Player bullets
+            if(dir == 'U') {
+                y -= delta;
+                if (y < 0) disable();
+            }
+            //Enemy bullets
+            else {
+                y += delta;
+                if (y > 720) disable();
+            }
+        }
     }
-    public void move(char direction){
-        int delta = 0;
-        if(direction=='U'){ //Player bullets
-            delta=-10;
-        }
-        else if(direction=='D') { //Enemy bullets
-            delta+=10;
-        }
-        while(!collide()){
-            pos+=delta;
-        }
+
+    public void fire(int xPos, int yPos, char dir_) {
+        x = xPos;
+        y = yPos;
+        dir = dir_;
+        enabled = true;
     }
-    public boolean collide(){
-        //If bullet goes out of bounds or hits an enemy/obstacle, return true
-        if(pos<0||pos>720)
-            return true;
-        //TODO handle case of bullet hitting enemy/obstacle
-        return false;
+
+    public void disable() {
+        enabled = false;
+        x = -100;
+        y = -100;
     }
 }

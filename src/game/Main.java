@@ -20,6 +20,7 @@ public class Main extends Application{
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
     Button btn;
     Scene menu,game;
+    public static GraphicsContext gc;
     public static boolean startGame = false;
     private int width = 1280, height = 720;
 
@@ -27,8 +28,7 @@ public class Main extends Application{
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
 
-        Image player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
-        Image playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
+
         Image enemy1 = new Image(new File("enemy.png").toURI().toString(), 88, 64, true, false);
 
         Group root = new Group();
@@ -61,7 +61,6 @@ public class Main extends Application{
                 gc.setLineWidth(2);
                 Font font = Font.font( "Times New Roman", FontWeight.BOLD, 48 );
                 gc.setFont(font);
-                gc.drawImage(player, 100, 660);
             }
         }.start();
 
