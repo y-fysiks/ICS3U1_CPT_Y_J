@@ -193,6 +193,7 @@ public class Main extends Application{
                     lbl1.setText("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
                     lbl2.setText("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
                     primaryStage.setScene(gameOver);
+
                 }
                 cntFrames++;
 
