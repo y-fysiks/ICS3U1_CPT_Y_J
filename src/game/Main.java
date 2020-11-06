@@ -106,23 +106,26 @@ public class Main extends Application{
                     for(int i = 0; i < 11; i++)
                             for(int j = 0; j < 5; j++)
                                     grid[i][j].update();
-                    char direction='R';
-                    if(grid[10][0].x >= 1200) {
-                        direction = 'D';
+                    if (now % 30 == 0) {
+                        char direction='R';
+                        if(grid[10][0].x >= 1200) {
+                            direction = 'D';
+                            moveAll(direction,5);
+                            direction = 'L';
+                            prevDirection='L';
+                        }
+                        else if(grid[0][0].x <= 20) {
+                            direction = 'D';
+                            moveAll(direction,5);
+                            direction='R';
+                            prevDirection='R';
+                        }
+                        else{
+                            direction=prevDirection;
+                        }
                         moveAll(direction,5);
-                        direction = 'L';
-                        prevDirection='L';
                     }
-                    else if(grid[0][0].x <= 20) {
-                        direction = 'D';
-                        moveAll(direction,5);
-                        direction='R';
-                        prevDirection='R';
-                    }
-                    else{
-                        direction=prevDirection;
-                    }
-                    moveAll(direction,5);
+
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
@@ -134,6 +137,23 @@ public class Main extends Application{
 
         primaryStage.show();
 
+    }
+    public void moveAll(char direction, int speed){
+        if(direction=='R'){
+            for(int i = 0; i < 11; i++)
+                for(int j = 0; j < 5; j++)
+                    grid[i][j].move(direction,speed);
+        }
+        else if(direction=='L'){
+            for(int i = 0; i < 11; i++)
+                for(int j = 0; j < 5; j++)
+                    grid[i][j].move(direction,speed);
+        }
+        else if(direction=='D'){
+            for(int i = 0; i < 11; i++)
+                for(int j = 0; j < 5; j++)
+                    grid[i][j].move(direction,speed);
+        }
     }
     private static void setStartGame() {
         startGame = true;
