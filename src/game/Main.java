@@ -107,18 +107,22 @@ public class Main extends Application{
                             for(int j = 0; j < 5; j++)
                                     grid[i][j].update();
                     char direction='R';
-                    if(grid[10][0].x >= 1260) {
+                    if(grid[10][0].x >= 1200) {
+                        direction = 'D';
+                        moveAll(direction,5);
                         direction = 'L';
                         prevDirection='L';
                     }
                     else if(grid[0][0].x <= 20) {
-                        direction = 'R';
+                        direction = 'D';
+                        moveAll(direction,5);
+                        direction='R';
                         prevDirection='R';
                     }
                     else{
                         direction=prevDirection;
                     }
-                    moveAll(direction);
+                    moveAll(direction,5);
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
@@ -131,16 +135,21 @@ public class Main extends Application{
         primaryStage.show();
 
     }
-    public void moveAll(char direction){
+    public void moveAll(char direction, int speed){
         if(direction=='R'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].x+=5;
+                    grid[i][j].x+=speed;
         }
         else if(direction=='L'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].x-=5;
+                    grid[i][j].x-=speed;
+        }
+        else if(direction=='D'){
+            for(int i = 0; i < 11; i++)
+                for(int j = 0; j < 5; j++)
+                    grid[i][j].y+=speed;
         }
     }
     private static void setStartGame() {
