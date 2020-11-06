@@ -30,6 +30,7 @@ public class Main extends Application{
     public static Image player;
     public static Image playerDestroyed;
     public static Image enemy1;
+    public static Image enemyFire;
     static boolean temp = false;
     static Alien[][]grid;
     static char prevDirection='R';
@@ -69,7 +70,7 @@ public class Main extends Application{
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
-
+        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),40,30,true,false);
 
         Player me = new Player();
         grid = new Alien[11][5];
@@ -130,7 +131,13 @@ public class Main extends Application{
                         }
 
                     }
-
+                    if(now%10000==0)
+                        for(int i = 0; i < 11; i++)
+                            for(int j = 0; j < 5; j++)
+                                grid[i][j].isFiring=false;
+                    if(now%10000==0) {
+                        shoot();
+                    }
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
@@ -145,6 +152,13 @@ public class Main extends Application{
 
         primaryStage.show();
 
+    }
+    public void shoot() {
+        int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
+        //debug System.out.println(x + " " + y);
+        grid[x][y].bullet.fire(grid[x][y].x,grid[x][y].y);
+        grid[x][y].isFiring=true;
+        grid[x][y].update();
     }
     public void moveAll(char direction, int speed){
         if(direction=='R'){

@@ -12,7 +12,7 @@ public class Bullet {
 
     public Bullet(char dir_) {
         dir = dir_;
-    }
+}
     public void update() {
         final int delta = 8;
         if (enabled) {
@@ -37,9 +37,7 @@ public class Bullet {
             y = yPos;
             enabled = true;
         }
-
     }
-
     public void disable() {
         enabled = false;
         x = -100;
