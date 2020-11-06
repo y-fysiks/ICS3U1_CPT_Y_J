@@ -17,6 +17,7 @@ public class Alien{
         type = type_;
         x = x_;
         y = y_;
+        bullet.delta = 5;
     }
     public void move(char direction, int speed){
         if(direction=='L')
@@ -26,6 +27,11 @@ public class Alien{
         else if(direction=='D')
             y+=speed*2;
     }
+
+    public boolean isHit(Bullet bullet) {
+        return enabled && bullet.y > y && bullet.y < y + 24 && bullet.x + 2 > x && bullet.x - 2 < x + 33;
+    }
+
     public void update() {
         bullet.update();
         if (enabled) {

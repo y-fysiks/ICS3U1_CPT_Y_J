@@ -9,12 +9,12 @@ public class Bullet {
     int y = -100;
     boolean enabled = false;
     char dir;
+    int delta = 8;
 
     public Bullet(char dir_) {
         dir = dir_;
 }
     public void update() {
-        final int delta = 8;
         if (enabled) {
             Main.gc.setFill(Color.WHITE);
             Main.gc.fillRect(x - 2, y, 4, 10);

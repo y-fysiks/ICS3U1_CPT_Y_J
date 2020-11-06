@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 public class Player {
     int lives = 3;
     int x = 100;
-    final int y = 620;
+    final int y = 600;
     int points = 0;
     Bullet bullet = new Bullet('U');
     private int destroyed = 0;
@@ -35,9 +35,9 @@ public class Player {
     }
 
     public void moveRight() {
-        if (x < 1280 - 90) x += 5;
+        if (x < 1280 - 90) x += 10;
     }
     public void moveLeft() {
-        if (x > 10) x -= 5;
+        if (x > 10) x -= 10;
     }
 }

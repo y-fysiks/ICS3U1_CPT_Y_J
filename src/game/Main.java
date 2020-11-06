@@ -68,15 +68,15 @@ public class Main extends Application{
 
         //setup:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
-        playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
+        playerDestroyed = new Image(new File("player destroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
-        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),40,30,true,false);
+        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,true,false);
 
         Player me = new Player();
         grid = new Alien[11][5];
         for(int i = 0; i < 11; i++) {
             for (int j = 0; j < 5; j++) {
-                grid[i][j] = new Alien(1, i * 55 + 50,50 + j * 45);
+                grid[i][j] = new Alien(1, i * 45 + 100,100 + j * 37);
             }
         }
         HashSet<String> input = new HashSet<>();
@@ -109,38 +109,44 @@ public class Main extends Application{
                         for(int j = 0; j < 5; j++) {
                             grid[i][j].update();
                             if(me.isHit(grid[i][j].bullet)) me.destroy();
-                            if (cntFrames % 60 == 0) {
+                            if (grid[i][j].isHit(me.bullet)) {
+                                grid[i][j].enabled = false;
+                                me.bullet.disable();
+                                me.points += 100;
+                            }
+                            if (cntFrames % 30 == 29) {
                                 grid[i][j].isFiring = false;
                             }
                         }
                     }
-                    if (cntFrames % 60 == 0) {
+                    if (cntFrames % 30 == 0) {
                         char direction = 'R';
-                        if(grid[10][0].x >= 1200 && prevDirection != 'L') {
+                        if(grid[10][0].x >= 1180 && prevDirection != 'L') {
                             direction = 'D';
                             moveAll(direction,10);
-                            direction = 'L';
                             prevDirection='L';
                         }
-                        else if(grid[0][0].x <= 80 && prevDirection != 'R') {
+                        else if(grid[0][0].x <= 100 && prevDirection != 'R') {
                             direction = 'D';
                             moveAll(direction,10);
-                            direction='R';
                             prevDirection='R';
                         }
                         else{
                             direction = prevDirection;
-                            moveAll(direction,40);
+                            moveAll(direction,10);
                         }
 
+
                     }
-                    if(cntFrames % 60 == 0)
-                        for(int i = 0; i < 11; i++)
-                            for(int j = 0; j < 5; j++)
-                                grid[i][j].isFiring=false;
-                    if(cntFrames % 60 == 0) {
+                    if (cntFrames % 60 == 30) {
                         shoot();
                     }
+                    //draw lives, and points
+                    gc.setStroke(Color.GREEN);
+                    gc.setLineWidth(5);
+
+                    gc.strokeLine(0, 650, 1281, 650);
+                    //end
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
