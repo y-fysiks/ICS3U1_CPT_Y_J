@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-
 public class Main extends Application{
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
     Button btn;
@@ -30,14 +29,13 @@ public class Main extends Application{
     public static Image player;
     public static Image playerDestroyed;
     public static Image enemy1;
+    public static Image enemyFire;
     static boolean temp = false;
     static Alien[][]grid;
     static char prevDirection='R';
     public void start(Stage primaryStage) throws Exception{
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
-
-
 
         Group root = new Group();
         game = new Scene(root);
@@ -68,7 +66,7 @@ public class Main extends Application{
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
-
+        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),40,30,true,false);
 
         Player me = new Player();
         grid = new Alien[11][5];
@@ -104,28 +102,32 @@ public class Main extends Application{
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
                     for(int i = 0; i < 11; i++)
-                            for(int j = 0; j < 5; j++)
-                                    grid[i][j].update();
-                    if (now % 30 == 0) {
-                        char direction='R';
-                        if(grid[10][0].x >= 1200) {
+                        for(int j = 0; j < 5; j++)
+                            grid[i][j].update();
+                    if (now % 100 == 0) {
+                        char direction = 'R';
+                        if (grid[10][0].x >= 1200) {
                             direction = 'D';
-                            moveAll(direction,5);
+                            moveAll(direction, 5);
                             direction = 'L';
-                            prevDirection='L';
-                        }
-                        else if(grid[0][0].x <= 20) {
+                            prevDirection = 'L';
+                        } else if (grid[0][0].x <= 20) {
                             direction = 'D';
-                            moveAll(direction,5);
-                            direction='R';
-                            prevDirection='R';
+                            moveAll(direction, 5);
+                            direction = 'R';
+                            prevDirection = 'R';
+                        } else {
+                            direction = prevDirection;
                         }
-                        else{
-                            direction=prevDirection;
-                        }
-                        moveAll(direction,5);
+                        moveAll(direction, 5);
                     }
-
+                    if(now%10000==0)
+                        for(int i = 0; i < 11; i++)
+                            for(int j = 0; j < 5; j++)
+                                grid[i][j].isFiring=false;
+                    if(now%10000==0) {
+                        shoot();
+                    }
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
@@ -137,6 +139,13 @@ public class Main extends Application{
 
         primaryStage.show();
 
+    }
+    public void shoot() {
+        int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
+        //debug System.out.println(x + " " + y);
+        grid[x][y].bullet.fire(grid[x][y].x,grid[x][y].y);
+        grid[x][y].isFiring=true;
+        grid[x][y].update();
     }
     public void moveAll(char direction, int speed){
         if(direction=='R'){
