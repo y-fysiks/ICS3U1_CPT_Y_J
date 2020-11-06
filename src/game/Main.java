@@ -66,7 +66,7 @@ public class Main extends Application{
         //setup:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
-        enemy1 = new Image(new File("enemy.png").toURI().toString(), 88, 64, true, false);
+        enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
 
 
         Player me = new Player();
@@ -83,7 +83,12 @@ public class Main extends Application{
                     input.remove(code);
                 }
         );
-
+        Alien[][] enemies = new Alien[5][11];
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 11; j++) {
+                enemies[i][j] = new Alien(1, 100 + j * 64, 100 + i * 47);
+            }
+        }
         //setup ends
         new AnimationTimer() {
             @Override
@@ -96,6 +101,11 @@ public class Main extends Application{
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
+                    for (int i = 0; i < 5; i++) {
+                        for (int j = 0; j < 11; j++) {
+                            enemies[i][j].update();
+                        }
+                    }
 
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
