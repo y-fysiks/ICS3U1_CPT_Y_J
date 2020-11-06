@@ -139,17 +139,17 @@ public class Main extends Application{
         if(direction=='R'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].x+=speed;
+                    grid[i][j].move(direction,speed);
         }
         else if(direction=='L'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].x-=speed;
+                    grid[i][j].move(direction,speed);
         }
         else if(direction=='D'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].y+=speed;
+                    grid[i][j].move(direction,speed);
         }
     }
     private static void setStartGame() {

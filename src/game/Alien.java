@@ -16,13 +16,13 @@ public class Alien{
         x = x_;
         y = y_;
     }
-    public void move(char direction){
+    public void move(char direction, int speed){
         if(direction=='L')
-            x-=10;
+            x-=speed;
         else if(direction=='R')
-            x+=10;
+            x+=speed;
         else if(direction=='D')
-            y+=10;
+            y+=speed*2;
     }
     public void update() {
         if (enabled) {
