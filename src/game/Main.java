@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Main extends Application{
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
@@ -28,6 +29,7 @@ public class Main extends Application{
     private int width = 1280, height = 720;
     public static Image player;
     public static Image playerDestroyed;
+    public static Image enemy1;
     static boolean temp = false;
 
     public void start(Stage primaryStage) throws Exception{
@@ -54,6 +56,7 @@ public class Main extends Application{
         layout1.getChildren().add(btn);
         menu = new Scene(layout1,width,height);
         primaryStage.setScene(menu);
+        primaryStage.setResizable(false);
 
         primaryStage.show();
         gc.setLineWidth(2);
@@ -63,18 +66,21 @@ public class Main extends Application{
         //setup:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
+        enemy1 = new Image(new File("enemy.png").toURI().toString(), 88, 64, true, false);
+
+
         Player me = new Player();
-        ArrayList<String> input = new ArrayList<>();
+        HashSet<String> input = new HashSet<>();
         game.setOnKeyPressed(
                 event -> {
-                    String code = event.getCharacter();
-                    if (!input.contains(code)) input.add(code);
+                    String code = event.getCode().toString();
+                    input.add(code);
                 }
         );
         game.setOnKeyReleased(
                 event -> {
-                    String code = event.getCharacter();
-                    if (!input.contains(code)) input.add(code);
+                    String code = event.getCode().toString();
+                    input.remove(code);
                 }
         );
 
@@ -90,6 +96,10 @@ public class Main extends Application{
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
+
+                    if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
+                    if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
+                    if (input.contains("SPACE")) me.fire();
                 }
 
 

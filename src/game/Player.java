@@ -6,13 +6,13 @@ import javafx.scene.image.Image;
 public class Player {
     int lives = 3;
     int x = 100;
-    final int y = 660;
+    final int y = 620;
     int points = 0;
     Bullet bullet = new Bullet('U');
     int destroyed = 0;
 
-    public void shoot() {
-        bullet.fire(x, y);
+    public void fire() {
+        bullet.fire(x + 40, y - 10);
     }
 
     public void update() {
@@ -32,5 +32,12 @@ public class Player {
 
     public boolean isHit(Bullet bullet) {
         return bullet.y > y + 10 && bullet.y < y + 36 && bullet.x > x && bullet.x < x + 80;
+    }
+
+    public void moveRight() {
+        if (x < 1280 - 90) x += 5;
+    }
+    public void moveLeft() {
+        if (x > 10) x -= 5;
     }
 }

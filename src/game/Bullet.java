@@ -14,10 +14,10 @@ public class Bullet {
         dir = dir_;
     }
     public void update() {
-        final int delta = 4;
+        final int delta = 8;
         if (enabled) {
             Main.gc.setFill(Color.WHITE);
-            Main.gc.rect(x - 1, y, 2, 6);
+            Main.gc.fillRect(x - 2, y, 4, 10);
             //Player bullets
             if(dir == 'U') {
                 y -= delta;
@@ -32,9 +32,12 @@ public class Bullet {
     }
 
     public void fire(int xPos, int yPos) {
-        x = xPos;
-        y = yPos;
-        enabled = true;
+        if (!enabled) {
+            x = xPos;
+            y = yPos;
+            enabled = true;
+        }
+
     }
 
     public void disable() {

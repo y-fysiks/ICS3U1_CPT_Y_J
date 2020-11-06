@@ -10,7 +10,6 @@ public class Alien{
     int y;
     boolean enabled = true;
     Bullet bullet = new Bullet('D');
-    Image enemy1 = new Image(new File("enemy.png").toURI().toString(), 88, 64, true, false);
 
 
     public Alien(int type_, int x_, int y_) {
@@ -21,7 +20,7 @@ public class Alien{
     public void update() {
         if (enabled) {
             if (type == 1) {
-                Main.gc.drawImage(enemy1, x, y);
+                Main.gc.drawImage(Main.enemy1, x, y);
             }
 
         }
