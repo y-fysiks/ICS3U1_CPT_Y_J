@@ -13,18 +13,21 @@ public class Bullet {
 
     public Bullet(char dir_) {
         dir = dir_;
-}
+    }
     public void update() {
         if (enabled) {
-            Main.gc.setFill(Color.WHITE);
-            Main.gc.fillRect(x - 2, y, 4, 10);
+
             //Player bullets
             if(dir == 'U') {
+                Main.gc.setFill(Color.GREEN);
+                Main.gc.fillRect(x - 3, y, 6, 20);
                 y -= delta;
                 if (y < 0) disable();
             }
             //Enemy bullets
             else {
+                Main.gc.setFill(Color.WHITE);
+                Main.gc.fillRect(x - 2, y, 4, 10);
                 y += delta;
                 if (y > 720) disable();
             }
