@@ -33,6 +33,7 @@ public class Main extends Application{
     static boolean temp = false;
     static Alien[][]grid;
     static char prevDirection='R';
+    static long cntFrames = 0;
     public void start(Stage primaryStage) throws Exception{
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
@@ -74,7 +75,7 @@ public class Main extends Application{
         grid = new Alien[11][5];
         for(int i = 0; i < 11; i++) {
             for (int j = 0; j < 5; j++) {
-                grid[i][j] = new Alien(1, i*80+210,j*80); //Change 1 to random later
+                grid[i][j] = new Alien(1, i * 55 + 50,50 + j * 45);
             }
         }
         HashSet<String> input = new HashSet<>();
@@ -103,34 +104,41 @@ public class Main extends Application{
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
-                    for(int i = 0; i < 11; i++)
-                            for(int j = 0; j < 5; j++)
-                                    grid[i][j].update();
-                    if (now % 30 == 0) {
-                        char direction='R';
-                        if(grid[10][0].x >= 1200) {
+                    for(int i = 0; i < 11; i++) {
+                        for(int j = 0; j < 5; j++) {
+                            grid[i][j].update();
+                            if(me.isHit(grid[i][j].bullet)) me.destroy();
+                        }
+                    }
+                    if (cntFrames % 60 == 0) {
+                        char direction = 'R';
+                        if(grid[10][0].x >= 1200 && prevDirection != 'L') {
                             direction = 'D';
-                            moveAll(direction,5);
+                            moveAll(direction,10);
                             direction = 'L';
                             prevDirection='L';
                         }
-                        else if(grid[0][0].x <= 20) {
+                        else if(grid[0][0].x <= 80 && prevDirection != 'R') {
                             direction = 'D';
-                            moveAll(direction,5);
+                            moveAll(direction,10);
                             direction='R';
                             prevDirection='R';
                         }
                         else{
-                            direction=prevDirection;
+                            direction = prevDirection;
+                            moveAll(direction,40);
                         }
-                        moveAll(direction,5);
+
                     }
 
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
-                }
 
+
+
+                }
+                cntFrames++;
 
             }
         }.start();

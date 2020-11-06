@@ -9,7 +9,7 @@ public class Player {
     final int y = 620;
     int points = 0;
     Bullet bullet = new Bullet('U');
-    int destroyed = 0;
+    private int destroyed = 0;
 
     public void fire() {
         bullet.fire(x + 40, y - 10);
