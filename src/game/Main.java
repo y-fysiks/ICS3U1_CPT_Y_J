@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -21,9 +22,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Main extends Application{
-    StackPane layout1, layout2; //layout1 = menu, layout2 = game
-    Button btn;
-    Scene menu,game;
+    private Group layout1, layout2; //layout1 = menu, layout2 = gameOver
+    private Button btn,restart,quit;
+    private Scene menu,game,gameOver;
+    private int high_score=0,current_score=0;
+    private Label lbl1,lbl2,title;
     public static GraphicsContext gc;
     public static boolean startGame = false;
     private int width = 1280, height = 720;
@@ -31,15 +34,15 @@ public class Main extends Application{
     public static Image playerDestroyed;
     public static Image enemy1;
     public static Image enemyFire;
+    static Player me;
     static boolean temp = false;
+    static boolean over = false;
     static Alien[][]grid;
     static char prevDirection='R';
     static long cntFrames = 0;
     public void start(Stage primaryStage) throws Exception{
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
-
-
 
         Group root = new Group();
         game = new Scene(root);
@@ -51,32 +54,57 @@ public class Main extends Application{
 
         Font TimesNewRoman = Font.font("Times New Roman", FontWeight.NORMAL, 36);
         gc.setFont( TimesNewRoman );
-
-        layout1 = new StackPane();
+        title = new Label("     Space Invaders!\nBy Yubo and Jeremy");
+        title.setFont(TimesNewRoman);
+        title.setLayoutX(485);
+        title.setLayoutY(100);
+        lbl1 = new Label("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
+        lbl2 = new Label("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
+        lbl1.setPrefSize(400,75);
+        lbl2.setPrefSize(400,75);
+        lbl1.setLayoutX(440);
+        lbl1.setLayoutY(75);
+        lbl2.setLayoutX(440);
+        lbl2.setLayoutY(175);
+        layout1 = new Group();
         btn = new Button();
         btn.setText("Start Game!");
         btn.setOnAction(e -> setStartGame());
+        btn.setPrefSize(400,100);
+        btn.setLayoutX(440);
+        btn.setLayoutY(300);
         layout1.getChildren().add(btn);
+        layout1.getChildren().add(title);
         menu = new Scene(layout1,width,height);
         primaryStage.setScene(menu);
         primaryStage.setResizable(false);
-
+        layout2 = new Group();
+        restart = new Button();
+        restart.setText("Restart");
+        restart.setOnAction(e -> setStartGame());
+        restart.setPrefSize(400,75);
+        restart.setLayoutX(440);
+        restart.setLayoutY(300);
+        quit = new Button();
+        quit.setText("Quit Game");
+        quit.setOnAction(e -> exit());
+        quit.setPrefSize(400,75);
+        quit.setLayoutX(440);
+        quit.setLayoutY(425);
+        layout2.getChildren().add(restart);
+        layout2.getChildren().add(quit);
+        layout2.getChildren().add(lbl1);
+        layout2.getChildren().add(lbl2);
+        gameOver = new Scene(layout2,width,height);
         primaryStage.show();
         gc.setLineWidth(1);
-
         //setup:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("player destroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
         enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,false,false);
 
-        Player me = new Player();
-        grid = new Alien[11][5];
-        for(int i = 0; i < 11; i++) {
-            for (int j = 0; j < 5; j++) {
-                grid[i][j] = new Alien(1, i * 45 + 100,100 + j * 37);
-            }
-        }
+        initGame();
         HashSet<String> input = new HashSet<>();
         game.setOnKeyPressed(
                 event -> {
@@ -103,10 +131,18 @@ public class Main extends Application{
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
+                    //debug System.out.println(me.lives);
+                    if(me.lives<=0) {
+                        startGame = false;
+                        over = true;
+                    }
                     for(int i = 0; i < 11; i++) {
                         for(int j = 0; j < 5; j++) {
                             grid[i][j].update();
-                            if(me.isHit(grid[i][j].bullet)) me.destroy();
+                            if(me.isHit(grid[i][j].bullet)) {
+                                grid[i][j].bullet.disable();
+                                me.destroy();
+                            }
                             if (grid[i][j].isHit(me.bullet)) {
                                 grid[i][j].enabled = false;
                                 me.bullet.disable();
@@ -150,8 +186,13 @@ public class Main extends Application{
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
-                    if (me.lives == 0) gameOver();
-
+                }
+                if(over){
+                    high_score = Math.max(high_score,me.points);
+                    current_score = me.points;
+                    lbl1.setText("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
+                    lbl2.setText("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
+                    primaryStage.setScene(gameOver);
 
                 }
                 cntFrames++;
@@ -162,9 +203,7 @@ public class Main extends Application{
         primaryStage.show();
 
     }
-    public void gameOver() {
-        //TODO make another scene to handle game over case and show high score
-    }
+
     public void shoot() {
         int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
         //debug System.out.println(x + " " + y);
@@ -191,9 +230,22 @@ public class Main extends Application{
     }
     private static void setStartGame() {
         startGame = true;
+        over = false;
+        temp = false;
+        initGame();
     }
-
-
+    public static void initGame(){
+        me = new Player();
+        grid = new Alien[11][5];
+        for(int i = 0; i < 11; i++) {
+            for (int j = 0; j < 5; j++) {
+                grid[i][j] = new Alien(1, i * 45 + 100,100 + j * 37);
+            }
+        }
+    }
+    public static void exit(){
+        System.exit(0);
+    }
     public static void main(String[] args) {
         launch(args);
     }
