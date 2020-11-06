@@ -2,35 +2,31 @@ package game;
 
 import javafx.scene.image.Image;
 
-import java.io.File;
 
 public class Player {
     int lives = 3;
     int x = 100;
     final int y = 660;
     int points = 0;
-    Bullet bullet = new Bullet();
+    Bullet bullet = new Bullet('U');
     int destroyed = 0;
 
-    Image player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
-    Image playerDestroyed = new Image(new File("playerDestroyed.png").toURI().toString(), 80, 36, true, false);
-
     public void shoot() {
-        bullet.fire(x, y, 'U');
+        bullet.fire(x, y);
     }
 
     public void update() {
+        bullet.update();
         if (destroyed == 0) {
-            Main.gc.drawImage(player, x, y);
-            bullet.update();
+            Main.gc.drawImage(Main.player, x, y);
         } else {
-            Main.gc.drawImage(playerDestroyed, x, y);
-            bullet.update();
+            Main.gc.drawImage(Main.playerDestroyed, x, y);
             destroyed -= 1;
         }
     }
     public void destroy() {
         destroyed = 50;
+        lives--;
         x = 100;
     }
 

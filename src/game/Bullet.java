@@ -8,8 +8,11 @@ public class Bullet {
     int x = -100;
     int y = -100;
     boolean enabled = false;
-    char dir = 'U';
+    char dir;
 
+    public Bullet(char dir_) {
+        dir = dir_;
+    }
     public void update() {
         final int delta = 4;
         if (enabled) {
@@ -28,10 +31,9 @@ public class Bullet {
         }
     }
 
-    public void fire(int xPos, int yPos, char dir_) {
+    public void fire(int xPos, int yPos) {
         x = xPos;
         y = yPos;
-        dir = dir_;
         enabled = true;
     }
 
