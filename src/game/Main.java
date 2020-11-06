@@ -49,7 +49,7 @@ public class Main extends Application{
 
         gc = canvas.getGraphicsContext2D();
 
-        Font TimesNewRoman = Font.font( "Times New Roman", FontWeight.BOLD, 48 );
+        Font TimesNewRoman = Font.font("Times New Roman", FontWeight.NORMAL, 36);
         gc.setFont( TimesNewRoman );
 
         layout1 = new StackPane();
@@ -62,15 +62,13 @@ public class Main extends Application{
         primaryStage.setResizable(false);
 
         primaryStage.show();
-        gc.setLineWidth(2);
-        Font font = Font.font( "Times New Roman", FontWeight.BOLD, 48 );
-        gc.setFont(font);
+        gc.setLineWidth(1);
 
         //setup:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("player destroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
-        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,true,false);
+        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,false,false);
 
         Player me = new Player();
         grid = new Alien[11][5];
@@ -144,13 +142,15 @@ public class Main extends Application{
                     //draw lives, and points
                     gc.setStroke(Color.GREEN);
                     gc.setLineWidth(5);
-
                     gc.strokeLine(0, 650, 1281, 650);
+                    gc.setLineWidth(1);
+                    gc.setFill(Color.WHITE);
+                    gc.fillText("" + me.points, 30, 30);
                     //end
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
-
+                    if (me.lives == 0) gameOver();
 
 
                 }
@@ -161,6 +161,9 @@ public class Main extends Application{
 
         primaryStage.show();
 
+    }
+    public void gameOver() {
+        //TODO make another scene to handle game over case and show high score
     }
     public void shoot() {
         int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
