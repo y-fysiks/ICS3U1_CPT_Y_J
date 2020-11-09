@@ -167,11 +167,15 @@ public class Main extends Application{
                         if(grid[10][0].x >= 1180 && prevDirection != 'L') {
                             direction = 'D';
                             moveAll(direction,20);
+                            if (checkLose()) {
+
+                            }
                             prevDirection='L';
                         }
                         else if(grid[0][0].x <= 100 && prevDirection != 'R') {
                             direction = 'D';
                             moveAll(direction,20);
+
                             prevDirection='R';
                         }
                         else{
@@ -217,6 +221,9 @@ public class Main extends Application{
         }.start();
 
         primaryStage.show();
+
+    }
+    public boolean checkLose() {
 
     }
     public boolean checkWin(){
