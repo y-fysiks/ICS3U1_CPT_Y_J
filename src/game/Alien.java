@@ -37,6 +37,9 @@ public class Alien{
             else if (type == 1) {
                 Main.gc.drawImage(Main.enemy1, x, y);
             }
+            else if (type == 2){
+                Main.gc.drawImage(Main.bossEnemy,x,y);
+            }
         }
     }
 }

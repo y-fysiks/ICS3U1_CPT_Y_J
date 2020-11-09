@@ -25,17 +25,21 @@ public class Main extends Application{
     private Label lbl2;
     private Label lbl3;
     private String message;
+    private int speed = 30;
     public static GraphicsContext gc;
     public static boolean startGame = false;
     public static Image player;
     public static Image playerDestroyed;
     public static Image enemy1;
     public static Image enemyFire;
+    public static Image bossEnemy;
     static Player me;
     static boolean temp = false;
     static boolean over = false;
     static Alien[][]grid;
+    static Alien boss;
     static char prevDirection='R';
+    static char bossDirection='R';
     static long cntFrames = 0;
     public void start(Stage primaryStage) {
         //setup/initialization
@@ -106,7 +110,7 @@ public class Main extends Application{
         playerDestroyed = new Image(new File("player destroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
         enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,false,false);
-
+        bossEnemy = new Image(new File("boss.png").toURI().toString(),45,30,true,false);
         initGame();
         HashSet<String> input = new HashSet<>();
         game.setOnKeyPressed(
@@ -134,14 +138,22 @@ public class Main extends Application{
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
                     me.update();
+                    if(boss.enabled) {
+                        boss.update();
+                        if(boss.isHit(me.bullet)){
+                            boss.enabled = false;
+                            cntFrames/=600;
+                            me.points+=500;
+                        }
+                    }
                     //debug System.out.println(me.lives);
-                    if(me.lives<=0) {
-                        message = "You lost!";
+                    if(checkWin()){
+                        message = "You Won!";
                         startGame = false;
                         over = true;
                     }
-                    if(checkWin()){
-                        message = "You Won!";
+                    if(checkLose()){
+                        message = "You Lost!";
                         startGame = false;
                         over = true;
                     }
@@ -166,25 +178,36 @@ public class Main extends Application{
                         char direction;
                         if(grid[10][0].x >= 1180 && prevDirection != 'L') {
                             direction = 'D';
-                            moveAll(direction,20);
-                            if (checkLose()) {
-
-                            }
+                            moveAll(direction,speed);
                             prevDirection='L';
                         }
-                        else if(grid[0][0].x <= 100 && prevDirection != 'R') {
+                        else if(grid[0][0].x <= 40 && prevDirection != 'R') {
                             direction = 'D';
-                            moveAll(direction,20);
+                            moveAll(direction,speed);
 
                             prevDirection='R';
                         }
                         else{
                             direction = prevDirection;
-                            moveAll(direction,20);
+                            moveAll(direction,speed);
+                        }
+                        if(boss.enabled){
+                            if(boss.x >= 1180)
+                                bossDirection='L';
+                            else if(boss.x <= 40)
+                                bossDirection='R';
+                            boss.move(bossDirection,speed*2);
                         }
                     }
                     if (cntFrames % 60 == 30) {
                         shoot();
+                    }
+                    if(cntFrames % 600 == 0){
+                        boss.enabled = true;
+                        boss.x = (int)(Math.random()*1100)+100;
+                    }
+                    if(cntFrames % 1200 == 0){
+                        boss.enabled = false;
                     }
                     //draw lives, and points
                     gc.setStroke(Color.GREEN);
@@ -193,7 +216,6 @@ public class Main extends Application{
                     gc.setLineWidth(1);
                     gc.setFill(Color.WHITE);
                     gc.fillText("Score:" + me.points, 30, 30);
-                    gc.fillText("Lives: " + me.lives,30,60);
                     //end
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
@@ -216,7 +238,9 @@ public class Main extends Application{
                     }
                 }
                 cntFrames++;
-
+                //just in case of overflow lol
+                if(cntFrames>=Integer.MAX_VALUE)
+                    cntFrames-=Integer.MAX_VALUE;
             }
         }.start();
 
@@ -224,7 +248,15 @@ public class Main extends Application{
 
     }
     public boolean checkLose() {
-
+        if(me.lives<=0)
+            return true;
+        for(int i = 0; i < 11; i++){
+            for(int j = 0; j < 5; j++){
+                if(grid[i][j].enabled&&grid[i][j].y>=600)
+                    return true;
+            }
+        }
+        return false;
     }
     public boolean checkWin(){
         for(int i = 0; i < 11; i++)
@@ -270,6 +302,9 @@ public class Main extends Application{
     public static void initGame(){
         me = new Player();
         grid = new Alien[11][5];
+        boss = new Alien(2,100,75);
+        boss.enabled = false;
+        cntFrames = 0;
         for(int i = 0; i < 11; i++) {
             for (int j = 0; j < 5; j++) {
                 grid[i][j] = new Alien(1, i * 45 + 100,100 + j * 37);
