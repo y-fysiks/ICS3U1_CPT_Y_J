@@ -6,7 +6,7 @@ import java.io.File;
 
 
 public class Alien{
-    private final int type;
+    int type;
     int x;
     int y;
     boolean enabled = true;

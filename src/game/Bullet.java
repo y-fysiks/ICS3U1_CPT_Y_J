@@ -13,7 +13,7 @@ public class Bullet {
 
     public Bullet(char dir_) {
         dir = dir_;
-}
+    }
     public void update() {
         if (enabled) {
 
