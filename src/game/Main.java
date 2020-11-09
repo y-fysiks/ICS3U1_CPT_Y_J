@@ -3,11 +3,13 @@ package game;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -23,10 +25,10 @@ import java.util.HashSet;
 public class Main extends Application{
     StackPane layout1, layout2; //layout1 = menu, layout2 = game
     Button btn;
+    Label hiScore;
     Scene menu,game;
     public static GraphicsContext gc;
     public static boolean startGame = false;
-    private int width = 1280, height = 720;
     public static Image player;
     public static Image playerDestroyed;
     public static Image enemy1;
@@ -56,11 +58,14 @@ public class Main extends Application{
         btn = new Button();
         btn.setText("Start Game!");
         btn.setOnAction(e -> setStartGame());
+        hiScore = new Label();
+        hiScore.setTranslateY(50);
+
         layout1.getChildren().add(btn);
-        menu = new Scene(layout1,width,height);
+        layout1.getChildren().add(hiScore);
+        menu = new Scene(layout1,1280,720);
         primaryStage.setScene(menu);
         primaryStage.setResizable(false);
-
         primaryStage.show();
         gc.setLineWidth(1);
 
@@ -150,8 +155,20 @@ public class Main extends Application{
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
-                    if (me.lives == 0) gameOver();
+                    if (me.lives == 0) {
+                        primaryStage.setScene(menu);
+                        gameOver(me);
+                        hiScore.setText("High score: " + me.highScore);
+                        for (int i = 0; i < grid.length; i++) {
+                            for (int j = 0; j < grid[i].length; j++) {
+                                grid[i][j].enabled = true;
+                            }
+                        }
+                    }
+                    for (int i = 0; i < me.lives; i++) {
+                        gc.drawImage(player, i * 120 + 50, 670);
 
+                    }
 
                 }
                 cntFrames++;
@@ -162,8 +179,13 @@ public class Main extends Application{
         primaryStage.show();
 
     }
-    public void gameOver() {
-        //TODO make another scene to handle game over case and show high score
+
+    public void gameOver(Player player) {
+        player.highScore = Math.max(player.highScore, player.points);
+        player.points = 0;
+        player.lives = 3;
+        startGame = false;
+        temp = false;
     }
     public void shoot() {
         int x = (int)(Math.random()*11), y = (int)(Math.random()*5);

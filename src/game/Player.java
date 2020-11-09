@@ -8,6 +8,7 @@ public class Player {
     int x = 100;
     final int y = 600;
     int points = 0;
+    int highScore = 0;
     Bullet bullet = new Bullet('U');
     private int destroyed = 0;
 
