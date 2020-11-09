@@ -3,8 +3,6 @@ package game;
 import javafx.scene.paint.Color;
 
 public class Bullet {
-    private int pos; //the y position of the bullet
-    boolean done = false;
     int x = -100;
     int y = -100;
     boolean enabled = false;

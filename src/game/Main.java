@@ -2,8 +2,6 @@ package game;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -11,27 +9,24 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Main extends Application{
-    private Group layout1, layout2; //layout1 = menu, layout2 = gameOver
-    private Button btn,restart,quit;
-    private Scene menu,game,gameOver;
+    private Scene game;
+    private Scene gameOver;
     private int high_score=0,current_score=0;
-    private Label lbl1,lbl2,lbl3,title;
+    private Label lbl1;
+    private Label lbl2;
+    private Label lbl3;
     private String message;
     public static GraphicsContext gc;
     public static boolean startGame = false;
-    private int width = 1280, height = 720;
     public static Image player;
     public static Image playerDestroyed;
     public static Image enemy1;
@@ -42,7 +37,7 @@ public class Main extends Application{
     static Alien[][]grid;
     static char prevDirection='R';
     static long cntFrames = 0;
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
 
@@ -56,23 +51,24 @@ public class Main extends Application{
 
         Font TimesNewRoman = Font.font("Times New Roman", FontWeight.NORMAL, 36);
         gc.setFont( TimesNewRoman );
-        title = new Label("     Space Invaders!\nBy Yubo and Jeremy");
+        Label title = new Label("     Space Invaders!\nBy Yubo and Jeremy");
         title.setFont(TimesNewRoman);
         title.setLayoutX(485);
         title.setLayoutY(100);
-        lbl1 = new Label("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
-        lbl2 = new Label("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
+        lbl1 = new Label("\t\t\t\t\t\tHigh Score: " + high_score);
+        lbl2 = new Label("\t\t\t\t\t\tScore: " + current_score);
         lbl3 = new Label("\t\t\t\t\t\t" + message);
         lbl1.setPrefSize(400,75);
         lbl2.setPrefSize(400,75);
-        lbl1.setLayoutX(440);
-        lbl1.setLayoutY(75);
-        lbl2.setLayoutX(440);
+        lbl1.setLayoutX(410);
+        lbl1.setLayoutY(100);
+        lbl2.setLayoutX(420);
         lbl2.setLayoutY(175);
-        lbl3.setLayoutX(440);
+        lbl3.setLayoutX(410);
         lbl3.setLayoutY(275);
-        layout1 = new Group();
-        btn = new Button();
+
+        Group layout1 = new Group();
+        Button btn = new Button();
         btn.setText("Start Game!");
         btn.setOnAction(e -> setStartGame());
         btn.setPrefSize(400,100);
@@ -80,17 +76,18 @@ public class Main extends Application{
         btn.setLayoutY(300);
         layout1.getChildren().add(btn);
         layout1.getChildren().add(title);
-        menu = new Scene(layout1,width,height);
+        Scene menu = new Scene(layout1, 1280, 720);
         primaryStage.setScene(menu);
         primaryStage.setResizable(false);
-        layout2 = new Group();
-        restart = new Button();
+        //layout1 = menu, layout2 = gameOver
+        Group layout2 = new Group();
+        Button restart = new Button();
         restart.setText("Restart");
         restart.setOnAction(e -> setStartGame());
         restart.setPrefSize(400,75);
         restart.setLayoutX(440);
         restart.setLayoutY(400);
-        quit = new Button();
+        Button quit = new Button();
         quit.setText("Quit Game");
         quit.setOnAction(e -> exit());
         quit.setPrefSize(400,75);
@@ -101,7 +98,7 @@ public class Main extends Application{
         layout2.getChildren().add(lbl1);
         layout2.getChildren().add(lbl2);
         layout2.getChildren().add(lbl3);
-        gameOver = new Scene(layout2,width,height);
+        gameOver = new Scene(layout2,1280,720);
         primaryStage.show();
         gc.setLineWidth(1);
         //setup:
@@ -166,7 +163,7 @@ public class Main extends Application{
                         }
                     }
                     if (cntFrames % 30 == 0) {
-                        char direction = 'R';
+                        char direction;
                         if(grid[10][0].x >= 1180 && prevDirection != 'L') {
                             direction = 'D';
                             moveAll(direction,20);
@@ -197,12 +194,15 @@ public class Main extends Application{
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
+                    for (int i = 0; i < me.lives; i++) {
+                        gc.drawImage(player, 50 + i * 120, 665);
+                    }
                 }
                 if(over){
                     high_score = Math.max(high_score,me.points);
                     current_score = me.points;
-                    lbl1.setText("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
-                    lbl2.setText("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
+                    lbl1.setText("\t\t\t\t\t\tHigh Score: " + high_score);
+                    lbl2.setText("\t\t\t\t\t\tScore: " + current_score);
                     lbl3.setText("\t\t\t\t\t\t" + message);
                     primaryStage.setScene(gameOver);
                     for (Alien[] aliens : grid) {

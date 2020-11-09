@@ -1,14 +1,11 @@
 package game;
 
-import javafx.scene.image.Image;
-
 
 public class Player {
     int lives = 3;
     int x = 100;
     final int y = 600;
     int points = 0;
-    int highScore = 0;
     Bullet bullet = new Bullet('U');
     private int destroyed = 0;
 
