@@ -26,7 +26,8 @@ public class Main extends Application{
     private Button btn,restart,quit;
     private Scene menu,game,gameOver;
     private int high_score=0,current_score=0;
-    private Label lbl1,lbl2,title;
+    private Label lbl1,lbl2,lbl3,title;
+    private String message;
     public static GraphicsContext gc;
     public static boolean startGame = false;
     private int width = 1280, height = 720;
@@ -60,12 +61,15 @@ public class Main extends Application{
         title.setLayoutY(100);
         lbl1 = new Label("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
         lbl2 = new Label("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
+        lbl3 = new Label("\t\t\t\t\t\t" + message);
         lbl1.setPrefSize(400,75);
         lbl2.setPrefSize(400,75);
         lbl1.setLayoutX(440);
         lbl1.setLayoutY(75);
         lbl2.setLayoutX(440);
         lbl2.setLayoutY(175);
+        lbl3.setLayoutX(440);
+        lbl3.setLayoutY(275);
         layout1 = new Group();
         btn = new Button();
         btn.setText("Start Game!");
@@ -84,17 +88,18 @@ public class Main extends Application{
         restart.setOnAction(e -> setStartGame());
         restart.setPrefSize(400,75);
         restart.setLayoutX(440);
-        restart.setLayoutY(300);
+        restart.setLayoutY(400);
         quit = new Button();
         quit.setText("Quit Game");
         quit.setOnAction(e -> exit());
         quit.setPrefSize(400,75);
         quit.setLayoutX(440);
-        quit.setLayoutY(425);
+        quit.setLayoutY(525);
         layout2.getChildren().add(restart);
         layout2.getChildren().add(quit);
         layout2.getChildren().add(lbl1);
         layout2.getChildren().add(lbl2);
+        layout2.getChildren().add(lbl3);
         gameOver = new Scene(layout2,width,height);
         primaryStage.show();
         gc.setLineWidth(1);
@@ -133,6 +138,12 @@ public class Main extends Application{
                     me.update();
                     //debug System.out.println(me.lives);
                     if(me.lives<=0) {
+                        message = "You lost!";
+                        startGame = false;
+                        over = true;
+                    }
+                    if(checkWin()){
+                        message = "You Won!";
                         startGame = false;
                         over = true;
                     }
@@ -157,20 +168,18 @@ public class Main extends Application{
                         char direction = 'R';
                         if(grid[10][0].x >= 1180 && prevDirection != 'L') {
                             direction = 'D';
-                            moveAll(direction,10);
+                            moveAll(direction,20);
                             prevDirection='L';
                         }
                         else if(grid[0][0].x <= 100 && prevDirection != 'R') {
                             direction = 'D';
-                            moveAll(direction,10);
+                            moveAll(direction,20);
                             prevDirection='R';
                         }
                         else{
                             direction = prevDirection;
-                            moveAll(direction,10);
+                            moveAll(direction,20);
                         }
-
-
                     }
                     if (cntFrames % 60 == 30) {
                         shoot();
@@ -181,7 +190,8 @@ public class Main extends Application{
                     gc.strokeLine(0, 650, 1281, 650);
                     gc.setLineWidth(1);
                     gc.setFill(Color.WHITE);
-                    gc.fillText("" + me.points, 30, 30);
+                    gc.fillText("Score:" + me.points, 30, 30);
+                    gc.fillText("Lives: " + me.lives,30,60);
                     //end
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
@@ -192,6 +202,7 @@ public class Main extends Application{
                     current_score = me.points;
                     lbl1.setText("\t\t\t\t\t\tHigh Score: " + Integer.toString(high_score));
                     lbl2.setText("\t\t\t\t\t\tScore: " + Integer.toString(current_score));
+                    lbl3.setText("\t\t\t\t\t\t" + message);
                     primaryStage.setScene(gameOver);
 
                 }
@@ -203,10 +214,20 @@ public class Main extends Application{
         primaryStage.show();
 
     }
-
+    public boolean checkWin(){
+        for(int i = 0; i < 11; i++)
+            for(int j = 0; j < 5; j++)
+                if(grid[i][j].enabled)
+                    return false;
+        return true;
+    }
     public void shoot() {
         int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
         //debug System.out.println(x + " " + y);
+        while(!grid[x][y].enabled){
+            x = (int)(Math.random()*11);
+            y = (int)(Math.random()*5);
+        }
         grid[x][y].bullet.fire(grid[x][y].x,grid[x][y].y);
         grid[x][y].isFiring=true;
         grid[x][y].update();
