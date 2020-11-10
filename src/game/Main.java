@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.HashSet;
 
 public class Main extends Application{
+    //Declare class variables
     private Scene game;
     private Scene gameOver;
     private int high_score=0,current_score=0;
@@ -27,7 +28,7 @@ public class Main extends Application{
     private Label lbl2;
     private Label lbl3;
     private String message;
-    private final int speed = 15;
+    private final int speed = 20;
     public static GraphicsContext gc;
     public static boolean startGame = false;
     public static Image player;
@@ -36,14 +37,14 @@ public class Main extends Application{
     public static Image enemyFire;
     public static Image bossEnemy;
     static Player me;
-    static boolean temp = false;
     static boolean over = false;
     static Alien[][]grid;
     static Alien boss;
-    static char prevDirection='R';
+    static char nextDirection='R';
     static long cntFrames = 0;
     public void start(Stage primaryStage) {
-        //setup/initialization
+        //setup/initialization of all groups, canvas, fonts, images, buttons, labels.
+        //JavaFX objects
         primaryStage.setTitle("Space Invaders");
 
         Group root = new Group();
@@ -132,31 +133,32 @@ public class Main extends Application{
         Button restart = new Button();
 
         restart.setText("Restart");
-        restart.setOnAction(e -> setStartGame());
+        restart.setOnAction(e -> setStartGame()); //Map button to start game method
         restart.setPrefSize(400,75);
         restart.setLayoutX(440);
         restart.setLayoutY(400);
+        restart.setTextFill(Color.GREEN);
 
         Button quit = new Button();
 
         quit.setText("Quit Game");
-        quit.setOnAction(e -> exit());
+        quit.setOnAction(e -> exit()); //Map button to exit program method
         quit.setPrefSize(400,75);
         quit.setLayoutX(440);
         quit.setLayoutY(525);
-
+        quit.setTextFill(Color.GREEN);
         layout2.getChildren().add(restart);
         layout2.getChildren().add(quit);
         layout2.getChildren().add(lbl1);
         layout2.getChildren().add(lbl2);
         layout2.getChildren().add(lbl3);
 
-        gameOver = new Scene(layout2,1280,720);
+        gameOver = new Scene(layout2,1280,720, Color.BLACK);
 
         primaryStage.show();
 
         gc.setLineWidth(1);
-        //setup:
+        //setup images:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
         playerDestroyed = new Image(new File("player destroyed.png").toURI().toString(), 80, 36, true, false);
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
@@ -185,22 +187,24 @@ public class Main extends Application{
             @Override
             public void handle(long now) {
                 if (startGame) {
-                    if (!temp) {
-                        primaryStage.setScene(game);
-                        temp = true;
-                    }
+                    primaryStage.setScene(game);
+                    //Graphics
                     gc.setFill( Color.BLACK );
                     gc.fillRect(0, 0, 1281, 721);
+                    //Update player sprite
                     me.update();
+                    //Check if the mothership has been enabled
                     if(boss.enabled) {
+                        //Update mothership and check if it has been hit.
                         boss.update();
                         if(boss.isHit(me.bullet)){
                             boss.enabled = false;
-                            cntFrames = cntFrames / 600;
+                            cntFrames = cntFrames / 600; //Divide by 600 so another mothership does not instantly spawn.
                             me.points+=500;
                         }
                     }
                     //debug System.out.println(me.lives);
+                    //If player has won or lost, update message, startGame, and over
                     if(checkWin()){
                         message = "You Won!";
                         input.clear();
@@ -213,50 +217,58 @@ public class Main extends Application{
                         startGame = false;
                         over = true;
                     }
+                    //Iterate over the entire grid of aliens and update them all.
                     for(int i = 0; i < 11; i++) {
                         for(int j = 0; j < 5; j++) {
                             grid[i][j].update();
+                            //Check if player has been hit by an aliens bullet
                             if(me.isHit(grid[i][j].bullet)) {
                                 grid[i][j].bullet.disable();
                                 me.destroy();
                             }
+                            //Check if an alien has been hit by a players bullet
                             if (grid[i][j].isHit(me.bullet)) {
                                 grid[i][j].enabled = false;
                                 me.bullet.disable();
                                 me.points += 100;
                             }
-                            if (cntFrames % 30 == 29) {
+                            //Reset the isFiring variable of all aliens
+                            if (cntFrames % 30 == 0) {
                                 grid[i][j].isFiring = false;
                             }
                         }
                     }
+                    //When cntFrames is divisible by 30, make all aliens move ni a certain direction.
                     if (cntFrames % 30 == 0) {
                         char direction;
-                        if(grid[10][0].x >= 1180 && prevDirection != 'L') {
+                        //When the rightmost alien reaches the right boundary from the left, make all aliens move down and set nextDirection to left.
+                        if(grid[10][0].x >= 1180 && nextDirection != 'L') {
                             direction = 'D';
                             moveAll(direction,speed);
-                            prevDirection='L';
+                            nextDirection='L';
                         }
-                        else if(grid[0][0].x <= 40 && prevDirection != 'R') {
+                        //When the leftmost alien reaches the left boundary from the right, make all aliens move down and set nextDirection to right.
+                        else if(grid[0][0].x <= 40 && nextDirection != 'R') {
                             direction = 'D';
                             moveAll(direction,speed);
-
-                            prevDirection='R';
+                            nextDirection='R';
                         }
+                        //In between the boundaries, we simply set the currentDirection to nextDirection and move all aliens in that direction.
                         else{
-                            direction = prevDirection;
+                            direction = nextDirection;
                             moveAll(direction,speed);
                         }
 
                     }
-                    if (cntFrames % 60 == 31) {
+                    //When cntFrames is divisible by 70, make a random active alien fire.
+                    if (cntFrames % 70 == 0) {
                         shoot();
                     }
+                    //When cntFrames is divisible by 600, enable the boss.
                     if(cntFrames % 600 == 0){
                         boss.enabled = true;
                         boss.x = 1300;
                     }
-
                     //boss move
                     if(boss.enabled){
                         if(boss.x <= 0) {
@@ -272,7 +284,7 @@ public class Main extends Application{
                     gc.setLineWidth(1);
                     gc.setFill(Color.WHITE);
                     gc.fillText("Score: " + me.points, 30, 50);
-                    //end
+                    //Read user keyboard input.
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
@@ -280,6 +292,7 @@ public class Main extends Application{
                         gc.drawImage(player, 50 + i * 120, 665);
                     }
                 }
+                //When game ends, update current score and high score as well as the labels.
                 if(over){
                     high_score = Math.max(high_score,me.points);
                     current_score = me.points;
@@ -287,6 +300,7 @@ public class Main extends Application{
                     lbl2.setText("\t\t\t\t\t\tScore: " + current_score);
                     lbl3.setText("\t\t\t\t\t\t" + message);
                     input.clear();
+                    //Change the scene to gameOver
                     primaryStage.setScene(gameOver);
 
                 }
@@ -297,10 +311,11 @@ public class Main extends Application{
                     cntFrames = 1;
             }
         }.start();
-
+        //show the stage
         primaryStage.show();
 
     }
+    //Check if the player has lost by checking either if the players live has dropped to 0 or if an active alien has reached the player.
     public boolean checkLose() {
         if(me.lives<=0)
             return true;
@@ -312,6 +327,7 @@ public class Main extends Application{
         }
         return false;
     }
+    //Check if the player has won by checking each aliens status. If there is an alive alien, return false. Otherwise, return true.
     public boolean checkWin(){
         for(int i = 0; i < 11; i++)
             for(int j = 0; j < 5; j++)
@@ -319,17 +335,21 @@ public class Main extends Application{
                     return false;
         return true;
     }
+    //method to cause a random enabled alien to shoot a bullet.
     public void shoot() {
         int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
         //debug System.out.println(x + " " + y);
+        //keep generating random numbers until the alien at that index is active.
         while(!grid[x][y].enabled){
             x = (int)(Math.random()*11);
             y = (int)(Math.random()*5);
         }
+        //fire bullet
         grid[x][y].bullet.fire(grid[x][y].x,grid[x][y].y);
         grid[x][y].isFiring=true;
         grid[x][y].update();
     }
+    //Method to move all aliens in a certain direction and speed.
     public void moveAll(char direction, int speed){
         if(direction=='R'){
             for(int i = 0; i < 11; i++)
@@ -347,12 +367,13 @@ public class Main extends Application{
                     grid[i][j].move(direction,speed);
         }
     }
+    //start game method
     private static void setStartGame() {
         startGame = true;
         over = false;
-        temp = false;
         initGame();
     }
+    //initialize game by resetting player, aliens, boss, and cntFrames.
     public static void initGame(){
         me = new Player();
         grid = new Alien[11][5];
@@ -365,10 +386,10 @@ public class Main extends Application{
             }
         }
     }
+    //Exits the program
     public static void exit(){
         System.exit(0);
     }
-    public static void main(String[] args) {
-        launch(args);
-    }
+    //Main method only passes args to javafx
+    public static void main(String[] args){ launch(args); }
 }
