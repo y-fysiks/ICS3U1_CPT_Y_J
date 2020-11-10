@@ -13,7 +13,7 @@ public class Alien{
         type = type_;
         x = x_;
         y = y_;
-        bullet.delta = 5;
+        bullet.delta = 8;
     }
     public void move(char direction, int speed){
         if(direction=='L')

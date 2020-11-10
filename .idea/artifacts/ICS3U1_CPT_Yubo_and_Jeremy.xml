@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="ICS3U1 CPT Yubo and Jeremy">
+    <output-path>$PROJECT_DIR$/out/artifacts/ICS3U1_CPT_Yubo_and_Jeremy</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="game.Main" />
+        <option name="description" value="By Yubo and Jeremy" />
+        <option name="height" value="720" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="nativeBundle" value="all" />
+        <option name="title" value="Space Invaders" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+        <option name="width" value="1280" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="ICS3U1_CPT_Y_J.jar">
+        <element id="module-output" name="ICS3U1 CPT Y_J" />
+      </element>
+    </root>
+  </artifact>
+</component>

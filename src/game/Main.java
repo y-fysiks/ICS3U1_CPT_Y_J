@@ -23,11 +23,8 @@ public class Main extends Application{
     private Scene game;
     private Scene gameOver;
     private int high_score=0,current_score=0;
-    private Label lbl1;
-    private Label lbl2;
-    private Label lbl3;
     private String message;
-    private final int speed = 15;
+    private final int speed = 20;
     public static GraphicsContext gc;
     public static boolean startGame = false;
     public static Image player;
@@ -45,7 +42,8 @@ public class Main extends Application{
     public void start(Stage primaryStage) {
         //setup/initialization
         primaryStage.setTitle("Space Invaders");
-
+        primaryStage.setWidth(1280);
+        primaryStage.setHeight(720);
         Group root = new Group();
         game = new Scene(root);
 
@@ -63,20 +61,32 @@ public class Main extends Application{
         title.setLayoutY(100);
         title.setTextFill(Color.GREEN);
 
-        lbl1 = new Label("\t\t\t\t\t\tHigh Score: " + high_score);
-        lbl2 = new Label("\t\t\t\t\t\tScore: " + current_score);
-        lbl3 = new Label("\t\t\t\t\t\t" + message);
-        lbl1.setPrefSize(400,75);
-        lbl2.setPrefSize(400,75);
-        lbl1.setLayoutX(410);
-        lbl1.setLayoutY(100);
-        lbl2.setLayoutX(420);
-        lbl2.setLayoutY(175);
-        lbl3.setLayoutX(410);
-        lbl3.setLayoutY(275);
+        Label lbl1 = new Label("High Score: " + high_score);
+        Label lbl2 = new Label("Score: " + current_score);
+        Label lbl3 = new Label("" + message);
+
+        lbl1.setStyle("-fx-font-size: 2em");
+        lbl1.setTranslateY(100);
+        lbl1.setMinWidth(1280);
+        lbl1.setAlignment(Pos.CENTER);
+        lbl1.setTextAlignment(TextAlignment.CENTER);
+        lbl1.setTextFill(Color.GREEN);
+        //debug System.out.println(lbl1.getWidth());
+
+        lbl2.setStyle("-fx-font-size: 2em");
+        lbl2.setMinWidth(1280);
+        lbl2.setAlignment(Pos.CENTER);
+        lbl2.setTextAlignment(TextAlignment.CENTER);
+        lbl3.setMinWidth(1280);
+        lbl3.setAlignment(Pos.CENTER);
+        lbl3.setTextAlignment(TextAlignment.CENTER);
+        lbl3.setStyle("-fx-font-size: 3em");
+        lbl1.setTranslateY(75);
+        lbl2.setTranslateY(175);
+        lbl3.setTranslateY(275);
         lbl1.setTextFill(Color.GREEN);
         lbl2.setTextFill(Color.GREEN);
-        lbl3.setTextFill(Color.GREEN);
+        lbl3.setTextFill(Color.RED);
 
         Group layout1 = new Group();
         Button btn = new Button();
@@ -133,17 +143,21 @@ public class Main extends Application{
 
         restart.setText("Restart");
         restart.setOnAction(e -> setStartGame());
-        restart.setPrefSize(400,75);
-        restart.setLayoutX(440);
+        restart.setPrefSize(300,50);
+        restart.setLayoutX(490);
         restart.setLayoutY(400);
+        restart.setTextFill(Color.GREEN);
+        restart.setStyle("-fx-font-size: 2em; -fx-background-color: black");
 
         Button quit = new Button();
 
         quit.setText("Quit Game");
         quit.setOnAction(e -> exit());
-        quit.setPrefSize(400,75);
-        quit.setLayoutX(440);
-        quit.setLayoutY(525);
+        quit.setPrefSize(300,50);
+        quit.setLayoutX(490);
+        quit.setLayoutY(500);
+        quit.setTextFill(Color.GREEN);
+        quit.setStyle("-fx-font-size: 2em; -fx-background-color: black");
 
         layout2.getChildren().add(restart);
         layout2.getChildren().add(quit);
@@ -151,7 +165,7 @@ public class Main extends Application{
         layout2.getChildren().add(lbl2);
         layout2.getChildren().add(lbl3);
 
-        gameOver = new Scene(layout2,1280,720);
+        gameOver = new Scene(layout2,1280,720, Color.BLACK);
 
         primaryStage.show();
 
@@ -225,7 +239,7 @@ public class Main extends Application{
                                 me.bullet.disable();
                                 me.points += 100;
                             }
-                            if (cntFrames % 30 == 29) {
+                            if (cntFrames % 30 == 0) {
                                 grid[i][j].isFiring = false;
                             }
                         }
@@ -249,7 +263,7 @@ public class Main extends Application{
                         }
 
                     }
-                    if (cntFrames % 60 == 31) {
+                    if (cntFrames % 60 == 30) {
                         shoot();
                     }
                     if(cntFrames % 600 == 0){
@@ -268,7 +282,7 @@ public class Main extends Application{
                     //draw lives, and points
                     gc.setStroke(Color.GREEN);
                     gc.setLineWidth(5);
-                    gc.strokeLine(0, 650, 1281, 650);
+                    gc.strokeLine(0, 610, 1281, 610);
                     gc.setLineWidth(1);
                     gc.setFill(Color.WHITE);
                     gc.fillText("Score: " + me.points, 30, 50);
@@ -277,17 +291,18 @@ public class Main extends Application{
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
                     for (int i = 0; i < me.lives; i++) {
-                        gc.drawImage(player, 50 + i * 120, 665);
+                        gc.drawImage(player, 50 + i * 120, 625);
                     }
                 }
                 if(over){
                     high_score = Math.max(high_score,me.points);
                     current_score = me.points;
-                    lbl1.setText("\t\t\t\t\t\tHigh Score: " + high_score);
-                    lbl2.setText("\t\t\t\t\t\tScore: " + current_score);
-                    lbl3.setText("\t\t\t\t\t\t" + message);
+                    lbl1.setText("High Score: " + high_score);
+                    lbl2.setText("Score: " + current_score);
+                    lbl3.setText("" + message);
                     input.clear();
                     primaryStage.setScene(gameOver);
+
 
                 }
                 cntFrames++;

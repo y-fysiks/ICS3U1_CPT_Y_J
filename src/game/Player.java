@@ -4,7 +4,7 @@ package game;
 public class Player {
     int lives = 3;
     int x = 100;
-    final int y = 600;
+    final int y = 560;
     int points = 0;
     Bullet bullet = new Bullet('U');
     private int destroyed = 0;
