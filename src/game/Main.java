@@ -2,6 +2,7 @@ package game;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -12,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -53,11 +55,14 @@ public class Main extends Application{
         gc = canvas.getGraphicsContext2D();
 
         Font TimesNewRoman = Font.font("Times New Roman", FontWeight.NORMAL, 36);
-        gc.setFont( TimesNewRoman );
+        gc.setFont(TimesNewRoman);
+
         Label title = new Label("     Space Invaders!\nBy Yubo and Jeremy");
         title.setFont(TimesNewRoman);
         title.setLayoutX(485);
         title.setLayoutY(100);
+        title.setTextFill(Color.GREEN);
+
         lbl1 = new Label("\t\t\t\t\t\tHigh Score: " + high_score);
         lbl2 = new Label("\t\t\t\t\t\tScore: " + current_score);
         lbl3 = new Label("\t\t\t\t\t\t" + message);
@@ -69,40 +74,87 @@ public class Main extends Application{
         lbl2.setLayoutY(175);
         lbl3.setLayoutX(410);
         lbl3.setLayoutY(275);
+        lbl1.setTextFill(Color.GREEN);
+        lbl2.setTextFill(Color.GREEN);
+        lbl3.setTextFill(Color.GREEN);
 
         Group layout1 = new Group();
         Button btn = new Button();
+        Button tutorial = new Button();
+
+
         btn.setText("Start Game!");
         btn.setOnAction(e -> setStartGame());
-        btn.setPrefSize(400,100);
-        btn.setLayoutX(440);
+        btn.setPrefSize(300,50);
+        btn.setLayoutX(490);
         btn.setLayoutY(300);
+        btn.setTextFill(Color.GREEN);
+        btn.setStyle("-fx-font-size: 2em; -fx-background-color: black");
+
+
+        Group howToG = new Group();
+        Scene howTo = new Scene(howToG, 1280, 720, Color.BLACK);
+        Label instructions = new Label("You are under attack by aliens!\nYou must shoot them down, but be careful!\nThey will shoot back. \n\nIf they reach the ground, you lose. If you die, you lose.\n\nNormal Alien: 100 pts.\nMothership: 500pts.\nUse A and D or left and right arrow keys to move, and space to shoot.\nGood luck.");
+        instructions.setStyle("-fx-font-size: 2em");
+        instructions.setTranslateY(100);
+        instructions.setMinWidth(1280);
+        instructions.setAlignment(Pos.CENTER);
+        instructions.setTextAlignment(TextAlignment.CENTER);
+        instructions.setTextFill(Color.GREEN);
+
+        Button back = new Button("Back");
+        back.setTextFill(Color.GREEN);
+        back.setStyle("-fx-font-size: 2em; -fx-background-color: black");
+
+        howToG.getChildren().add(instructions);
+        howToG.getChildren().add(back);
+        tutorial.setText("How to play");
+        tutorial.setOnAction(e -> primaryStage.setScene(howTo));
+        tutorial.setPrefSize(300,50);
+        tutorial.setLayoutX(490);
+        tutorial.setLayoutY(370);
+        tutorial.setTextFill(Color.GREEN);
+        tutorial.setStyle("-fx-font-size: 2em; -fx-background-color: black");
+
+
         layout1.getChildren().add(btn);
+        layout1.getChildren().add(tutorial);
         layout1.getChildren().add(title);
-        Scene menu = new Scene(layout1, 1280, 720);
+
+        Scene menu = new Scene(layout1, 1280, 720, Color.BLACK);
         primaryStage.setScene(menu);
         primaryStage.setResizable(false);
+        back.setOnAction(event -> primaryStage.setScene(menu));
+
         //layout1 = menu, layout2 = gameOver
+
         Group layout2 = new Group();
         Button restart = new Button();
+
         restart.setText("Restart");
         restart.setOnAction(e -> setStartGame());
         restart.setPrefSize(400,75);
         restart.setLayoutX(440);
         restart.setLayoutY(400);
+
         Button quit = new Button();
+
         quit.setText("Quit Game");
         quit.setOnAction(e -> exit());
         quit.setPrefSize(400,75);
         quit.setLayoutX(440);
         quit.setLayoutY(525);
+
         layout2.getChildren().add(restart);
         layout2.getChildren().add(quit);
         layout2.getChildren().add(lbl1);
         layout2.getChildren().add(lbl2);
         layout2.getChildren().add(lbl3);
+
         gameOver = new Scene(layout2,1280,720);
+
         primaryStage.show();
+
         gc.setLineWidth(1);
         //setup:
         player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
@@ -110,7 +162,10 @@ public class Main extends Application{
         enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
         enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,false,false);
         bossEnemy = new Image(new File("boss.png").toURI().toString(),45,30,true,false);
+
         initGame();
+
+
         HashSet<String> input = new HashSet<>();
         game.setOnKeyPressed(
                 event -> {
@@ -148,11 +203,13 @@ public class Main extends Application{
                     //debug System.out.println(me.lives);
                     if(checkWin()){
                         message = "You Won!";
+                        input.clear();
                         startGame = false;
                         over = true;
                     }
                     if(checkLose()){
                         message = "You Lose!";
+                        input.clear();
                         startGame = false;
                         over = true;
                     }
@@ -214,7 +271,7 @@ public class Main extends Application{
                     gc.strokeLine(0, 650, 1281, 650);
                     gc.setLineWidth(1);
                     gc.setFill(Color.WHITE);
-                    gc.fillText("Score:" + me.points, 30, 30);
+                    gc.fillText("Score: " + me.points, 30, 50);
                     //end
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
@@ -229,8 +286,9 @@ public class Main extends Application{
                     lbl1.setText("\t\t\t\t\t\tHigh Score: " + high_score);
                     lbl2.setText("\t\t\t\t\t\tScore: " + current_score);
                     lbl3.setText("\t\t\t\t\t\t" + message);
-                    primaryStage.setScene(gameOver);
                     input.clear();
+                    primaryStage.setScene(gameOver);
+
                 }
                 cntFrames++;
                 //just in case of overflow lol
