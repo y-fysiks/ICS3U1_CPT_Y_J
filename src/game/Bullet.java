@@ -7,11 +7,12 @@ public class Bullet {
     int y = -100;
     boolean enabled = false;
     char dir;
-    int delta = 12;
-
+    int delta = 12; //subtract delta if it is a player bullet, add delta if it is an enemy bullet
+    //Constructor
     public Bullet(char dir_) {
         dir = dir_;
     }
+    //updates the bullet sprite
     public void update() {
         if (enabled) {
 
@@ -31,7 +32,7 @@ public class Bullet {
             }
         }
     }
-
+    //Fires a bullet from (xPos,yPos)
     public void fire(int xPos, int yPos) {
         if (!enabled) {
             x = xPos;
@@ -39,6 +40,7 @@ public class Bullet {
             enabled = true;
         }
     }
+    //Disables and resets the bullet
     public void disable() {
         enabled = false;
         x = -100;
