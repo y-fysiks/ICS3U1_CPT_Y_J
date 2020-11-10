@@ -7,7 +7,7 @@ public class Bullet {
     int y = -100;
     boolean enabled = false;
     char dir;
-    int delta = 8;
+    int delta = 12;
 
     public Bullet(char dir_) {
         dir = dir_;

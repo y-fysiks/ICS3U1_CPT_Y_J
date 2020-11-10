@@ -25,7 +25,7 @@ public class Main extends Application{
     private Label lbl2;
     private Label lbl3;
     private String message;
-    private int speed = 30;
+    private final int speed = 15;
     public static GraphicsContext gc;
     public static boolean startGame = false;
     public static Image player;
@@ -39,7 +39,6 @@ public class Main extends Application{
     static Alien[][]grid;
     static Alien boss;
     static char prevDirection='R';
-    static char bossDirection='R';
     static long cntFrames = 0;
     public void start(Stage primaryStage) {
         //setup/initialization
@@ -142,7 +141,7 @@ public class Main extends Application{
                         boss.update();
                         if(boss.isHit(me.bullet)){
                             boss.enabled = false;
-                            cntFrames/=600;
+                            cntFrames = cntFrames / 600;
                             me.points+=500;
                         }
                     }
@@ -153,7 +152,7 @@ public class Main extends Application{
                         over = true;
                     }
                     if(checkLose()){
-                        message = "You Lost!";
+                        message = "You Lose!";
                         startGame = false;
                         over = true;
                     }
@@ -191,23 +190,23 @@ public class Main extends Application{
                             direction = prevDirection;
                             moveAll(direction,speed);
                         }
-                        if(boss.enabled){
-                            if(boss.x >= 1180)
-                                bossDirection='L';
-                            else if(boss.x <= 40)
-                                bossDirection='R';
-                            boss.move(bossDirection,speed*2);
-                        }
+
                     }
-                    if (cntFrames % 60 == 30) {
+                    if (cntFrames % 60 == 31) {
                         shoot();
                     }
                     if(cntFrames % 600 == 0){
                         boss.enabled = true;
-                        boss.x = (int)(Math.random()*1100)+100;
+                        boss.x = 1300;
                     }
-                    if(cntFrames % 1200 == 0){
-                        boss.enabled = false;
+
+                    //boss move
+                    if(boss.enabled){
+                        if(boss.x <= 0) {
+                            cntFrames = cntFrames / 600;
+                            boss.enabled = false;
+                        }
+                        boss.move('L',3);
                     }
                     //draw lives, and points
                     gc.setStroke(Color.GREEN);
@@ -231,16 +230,13 @@ public class Main extends Application{
                     lbl2.setText("\t\t\t\t\t\tScore: " + current_score);
                     lbl3.setText("\t\t\t\t\t\t" + message);
                     primaryStage.setScene(gameOver);
-                    for (Alien[] aliens : grid) {
-                        for (Alien alien : aliens) {
-                            alien.enabled = true;
-                        }
-                    }
+                    input.clear();
                 }
                 cntFrames++;
                 //just in case of overflow lol
-                if(cntFrames>=Integer.MAX_VALUE)
-                    cntFrames-=Integer.MAX_VALUE;
+                //If you run the program for just over a year, it might overflow...
+                if(cntFrames >= 2000000000)
+                    cntFrames = 1;
             }
         }.start();
 
