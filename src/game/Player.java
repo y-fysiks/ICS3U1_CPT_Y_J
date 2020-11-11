@@ -36,9 +36,9 @@ public class Player {
     }
     //movement
     public void moveRight() {
-        if (x < 1280 - 90) x += 10;
+        if (x < 1280 - 90) x += 7;
     }
     public void moveLeft() {
-        if (x > 10) x -= 10;
+        if (x > 10) x -= 7;
     }
 }

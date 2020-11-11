@@ -13,7 +13,7 @@ public class Alien{
         type = type_;
         x = x_;
         y = y_;
-        bullet.delta = 8;
+        bullet.delta = 5;
     }
     //Move an individual alien in a certain direction.
     public void move(char direction, int speed){

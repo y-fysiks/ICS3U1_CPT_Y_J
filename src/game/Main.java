@@ -328,7 +328,6 @@ public class Main extends Application{
                     //Change the scene to gameOver
                     primaryStage.setScene(gameOver);
 
-
                 }
                 cntFrames++;
                 //just in case of overflow lol

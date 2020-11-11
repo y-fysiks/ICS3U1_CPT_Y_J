@@ -7,7 +7,7 @@
         <option name="description" value="By Yubo and Jeremy" />
         <option name="height" value="720" />
         <option name="htmlPlaceholderId" value="" />
-        <option name="nativeBundle" value="exe" />
+        <option name="nativeBundle" value="all" />
         <option name="title" value="Space Invaders" />
         <option name="vendor" value="" />
         <option name="version" value="" />
