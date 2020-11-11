@@ -17,6 +17,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashSet;
 
 public class Main extends Application{
@@ -172,11 +173,11 @@ public class Main extends Application{
 
         gc.setLineWidth(1);
         //setup images:
-        player = new Image(new File("player.png").toURI().toString(), 80, 36, true, false);
-        playerDestroyed = new Image(new File("player destroyed.png").toURI().toString(), 80, 36, true, false);
-        enemy1 = new Image(new File("enemy.png").toURI().toString(), 33, 24, true, false);
-        enemyFire = new Image(new File("enemyfire.png").toURI().toString(),33,24,false,false);
-        bossEnemy = new Image(new File("boss.png").toURI().toString(),45,30,true,false);
+        player = new Image(getClass().getResource("/image.jpg").toString(), 80, 36, true, false);
+        playerDestroyed = new Image(new File("resources/player destroyed.png").toURI().toString(), 80, 36, true, false);
+        enemy1 = new Image(new File("resources/enemy.png").toURI().toString(), 33, 24, true, false);
+        enemyFire = new Image(new File("resources/enemyfire.png").toURI().toString(),33,24,false,false);
+        bossEnemy = new Image(new File("resources/boss.png").toURI().toString(),45,30,true,false);
 
         initGame();
 

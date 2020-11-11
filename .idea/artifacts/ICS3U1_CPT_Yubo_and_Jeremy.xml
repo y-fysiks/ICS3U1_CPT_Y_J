@@ -7,7 +7,7 @@
         <option name="description" value="By Yubo and Jeremy" />
         <option name="height" value="720" />
         <option name="htmlPlaceholderId" value="" />
-        <option name="nativeBundle" value="all" />
+        <option name="nativeBundle" value="exe" />
         <option name="title" value="Space Invaders" />
         <option name="vendor" value="" />
         <option name="version" value="" />
@@ -17,6 +17,9 @@
     <root id="root">
       <element id="archive" name="ICS3U1_CPT_Y_J.jar">
         <element id="module-output" name="ICS3U1 CPT Y_J" />
+        <element id="directory" name="resources">
+          <element id="dir-copy" path="$PROJECT_DIR$/resources" />
+        </element>
       </element>
     </root>
   </artifact>
