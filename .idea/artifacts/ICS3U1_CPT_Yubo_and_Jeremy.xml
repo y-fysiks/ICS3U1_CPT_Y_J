@@ -17,9 +17,7 @@
     <root id="root">
       <element id="archive" name="ICS3U1_CPT_Y_J.jar">
         <element id="module-output" name="ICS3U1 CPT Y_J" />
-        <element id="directory" name="resources">
-          <element id="dir-copy" path="$PROJECT_DIR$/resources" />
-        </element>
+        <element id="dir-copy" path="$PROJECT_DIR$/resources" />
       </element>
     </root>
   </artifact>

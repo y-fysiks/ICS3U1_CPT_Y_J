@@ -16,8 +16,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.net.URL;
 import java.util.HashSet;
 
 public class Main extends Application{
@@ -36,7 +34,7 @@ public class Main extends Application{
     public static Image bossEnemy;
     static Player me;
     static boolean over = false;
-    static Alien[][]grid;
+    static Alien[][] aliens;
     static Alien boss;
     static char nextDirection='R';
     static long cntFrames = 0;
@@ -172,12 +170,15 @@ public class Main extends Application{
         primaryStage.show();
 
         gc.setLineWidth(1);
-        //setup images:
-        player = new Image(getClass().getResource("/image.jpg").toString(), 80, 36, true, false);
-        playerDestroyed = new Image(new File("resources/player destroyed.png").toURI().toString(), 80, 36, true, false);
-        enemy1 = new Image(new File("resources/enemy.png").toURI().toString(), 33, 24, true, false);
-        enemyFire = new Image(new File("resources/enemyfire.png").toURI().toString(),33,24,false,false);
-        bossEnemy = new Image(new File("resources/boss.png").toURI().toString(),45,30,true,false);
+        /*
+        setup images:
+        load images from /src
+        */
+        player = new Image(getClass().getResource("/player.png").toString(), 80, 36, true, false);
+        playerDestroyed = new Image(getClass().getResource("/player destroyed.png").toString(), 80, 36, true, false);
+        enemy1 = new Image(getClass().getResource("/enemy.png").toString(), 33, 24, true, false);
+        enemyFire = new Image(getClass().getResource("/enemyfire.png").toString(),33,24,false,false);
+        bossEnemy = new Image(getClass().getResource("/boss.png").toString(),45,30,true,false);
 
         initGame();
 
@@ -234,21 +235,21 @@ public class Main extends Application{
                     //Iterate over the entire grid of aliens and update them all.
                     for(int i = 0; i < 11; i++) {
                         for(int j = 0; j < 5; j++) {
-                            grid[i][j].update();
+                            aliens[i][j].update();
                             //Check if player has been hit by an aliens bullet
-                            if(me.isHit(grid[i][j].bullet)) {
-                                grid[i][j].bullet.disable();
+                            if(me.isHit(aliens[i][j].bullet)) {
+                                aliens[i][j].bullet.disable();
                                 me.destroy();
                             }
                             //Check if an alien has been hit by a players bullet
-                            if (grid[i][j].isHit(me.bullet)) {
-                                grid[i][j].enabled = false;
+                            if (aliens[i][j].isHit(me.bullet)) {
+                                aliens[i][j].enabled = false;
                                 me.bullet.disable();
                                 me.points += 100;
                             }
                             //Reset the isFiring variable of all aliens
                             if (cntFrames % 30 == 0) {
-                                grid[i][j].isFiring = false;
+                                aliens[i][j].isFiring = false;
                             }
                         }
                     }
@@ -256,13 +257,13 @@ public class Main extends Application{
                     if (cntFrames % 30 == 0) {
                         char direction;
                         //When the rightmost alien reaches the right boundary from the left, make all aliens move down and set nextDirection to left.
-                        if(grid[10][0].x >= 1180 && nextDirection != 'L') {
+                        if(aliens[10][0].x >= 1180 && nextDirection != 'L') {
                             direction = 'D';
                             moveAll(direction,speed);
                             nextDirection='L';
                         }
                         //When the leftmost alien reaches the left boundary from the right, make all aliens move down and set nextDirection to right.
-                        else if(grid[0][0].x <= 40 && nextDirection != 'R') {
+                        else if(aliens[0][0].x <= 40 && nextDirection != 'R') {
                             direction = 'D';
                             moveAll(direction,speed);
                             nextDirection='R';
@@ -302,6 +303,16 @@ public class Main extends Application{
                     if (input.contains("D") || input.contains("RIGHT")) me.moveRight();
                     if (input.contains("A") || input.contains("LEFT")) me.moveLeft();
                     if (input.contains("SPACE")) me.fire();
+                    //testing game win situation, disable for deployment
+                    /*
+                    if (input.contains("G")) {
+                        for (int i = 0; i < 11; i++) {
+                            for (int j = 0; j < 5;j++) {
+                                aliens[i][j].enabled = false;
+                            }
+                        }
+                    }
+                    */
                     for (int i = 0; i < me.lives; i++) {
                         gc.drawImage(player, 50 + i * 120, 625);
                     }
@@ -336,7 +347,7 @@ public class Main extends Application{
             return true;
         for(int i = 0; i < 11; i++){
             for(int j = 0; j < 5; j++){
-                if(grid[i][j].enabled&&grid[i][j].y>=600)
+                if(aliens[i][j].enabled&& aliens[i][j].y>=600)
                     return true;
             }
         }
@@ -346,7 +357,7 @@ public class Main extends Application{
     public boolean checkWin(){
         for(int i = 0; i < 11; i++)
             for(int j = 0; j < 5; j++)
-                if(grid[i][j].enabled)
+                if(aliens[i][j].enabled)
                     return false;
         return true;
     }
@@ -355,31 +366,31 @@ public class Main extends Application{
         int x = (int)(Math.random()*11), y = (int)(Math.random()*5);
         //debug System.out.println(x + " " + y);
         //keep generating random numbers until the alien at that index is active.
-        while(!grid[x][y].enabled){
+        while(!aliens[x][y].enabled){
             x = (int)(Math.random()*11);
             y = (int)(Math.random()*5);
         }
         //fire bullet
-        grid[x][y].bullet.fire(grid[x][y].x,grid[x][y].y);
-        grid[x][y].isFiring=true;
-        grid[x][y].update();
+        aliens[x][y].bullet.fire(aliens[x][y].x, aliens[x][y].y);
+        aliens[x][y].isFiring=true;
+        aliens[x][y].update();
     }
     //Method to move all aliens in a certain direction and speed.
     public void moveAll(char direction, int speed){
         if(direction=='R'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].move(direction,speed);
+                    aliens[i][j].move(direction,speed);
         }
         else if(direction=='L'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].move(direction,speed);
+                    aliens[i][j].move(direction,speed);
         }
         else if(direction=='D'){
             for(int i = 0; i < 11; i++)
                 for(int j = 0; j < 5; j++)
-                    grid[i][j].move(direction,speed);
+                    aliens[i][j].move(direction,speed);
         }
     }
     //start game method
@@ -391,13 +402,13 @@ public class Main extends Application{
     //initialize game by resetting player, aliens, boss, and cntFrames.
     public static void initGame(){
         me = new Player();
-        grid = new Alien[11][5];
+        aliens = new Alien[11][5];
         boss = new Alien(2,100,75);
         boss.enabled = false;
         cntFrames = 0;
         for(int i = 0; i < 11; i++) {
             for (int j = 0; j < 5; j++) {
-                grid[i][j] = new Alien(1, i * 45 + 100,100 + j * 37);
+                aliens[i][j] = new Alien(1, i * 45 + 100,100 + j * 37);
             }
         }
     }
